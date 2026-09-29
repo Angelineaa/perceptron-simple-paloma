@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caso 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Identidad del proyecto y navegación entre secciones. -->
+  <header class="topbar">
+    <a class="brand-lockup" href="#top" aria-label="Caso 1">
+      <span class="brand-kicker">PROYECTO</span>
+      <span class="brand-title">Caso <span class="brand-number">1</span></span>
+    </a>
+    <nav class="top-nav" aria-label="Secciones de la simulación">
+      <a href="#inputs">Entradas</a>
+      <a href="#model">Red</a>
+      <a href="#patterns">Patrones</a>
+      <a href="#algorithm">Aprendizaje</a>
+    </nav>
+  </header>
+
+  <main class="container" id="top">
+    <!-- Paisaje decorativo; no participa en el cálculo del perceptrón. -->
+    <section class="hero">
+      <svg class="hero-landscape" viewBox="0 0 1440 360" preserveAspectRatio="none" aria-hidden="true">
+        <circle class="landscape-sun" cx="1110" cy="96" r="43" />
+        <path class="landscape-distant" d="M0 248 122 211 235 229 377 179 520 230 677 188 811 232 974 173 1115 223 1264 183 1440 225V360H0Z" />
+        <path class="landscape-middle" d="M0 276 174 237 328 268 509 216 687 266 850 221 1011 261 1190 210 1320 249 1440 218V360H0Z" />
+        <path class="landscape-foreground" d="M0 307 169 279 321 302 495 266 685 309 838 270 1034 306 1194 266 1346 295 1440 278V360H0Z" />
+        <path class="landscape-grass" d="m138 360 15-28 1 28m0 0 18-19m-18 19-7-13m411 13 17-31 1 31m0 0 18-20m-18 20-8-14m469 14 15-30 2 30m0 0 20-18m-20 18-8-13m237 13 17-27 1 27m0 0 18-18" />
+      </svg>
+      <div class="hero-copy">
+        <img class="pigeon-mark" src="pigeon-mark.png" alt="Paloma en vuelo" />
+        <h1>Perceptrón simple</h1>
+      </div>
+    </section>
+
+    <!-- Controles manuales para las tres entradas bipolares. -->
+    <section class="control-grid" id="inputs">
+      <div class="panel controls-panel">
+        <h2>Patrón de entrada</h2>
+        <div class="inputs">
+          <div class="input-card">
+            <label>x₁ <small>Izquierdo: −1 apagado, +1 encendido</small></label>
+            <div class="segmented" data-target="x1">
+              <button type="button" data-value="-1">−1</button>
+              <button type="button" data-value="1">+1</button>
+            </div>
+          </div>
+          <div class="input-card">
+            <label>x₂ <small>Derecho: −1 apagado, +1 encendido</small></label>
+            <div class="segmented" data-target="x2">
+              <button type="button" data-value="-1">−1</button>
+              <button type="button" data-value="1">+1</button>
+            </div>
+          </div>
+          <div class="input-card">
+            <label>x₃ <small>Picoteo: +1 izq., −1 der.</small></label>
+            <div class="segmented" data-target="x3">
+              <button type="button" data-value="-1">−1</button>
+              <button type="button" data-value="1">+1</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="secondary" id="stepBtn">Paso a paso</button>
+          <button class="primary" id="trainBtn">Entrenar</button>
+          <button class="ghost" id="resetBtn">Reiniciar</button>
+        </div>
+      </div>
+
+      <div class="panel status-panel">
+        <h2>Clasificación actual</h2>
+        <div class="result-box" id="resultBox">
+          <div class="result-icon" id="resultIcon">—</div>
+          <div>
+            <strong id="resultTitle">Esperando patrón</strong>
+            <p id="resultText">Selecciona un valor para x₁, x₂ y x₃.</p>
+          </div>
+        </div>
+
+        <div class="objective-box">
+          <div class="mini-label">Salida deseada para este patrón</div>
+          <div class="goal-value" id="desiredOutput">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diagrama y métricas actualizados durante el entrenamiento. -->
+    <section class="workspace" id="model">
+      <div class="panel perceptron-panel">
+        <div class="panel-header">
+          <h2>Perceptrón</h2>
+        </div>
+
+        <div class="diagram-viewport">
+          <svg class="perceptron-svg" viewBox="0 0 800 350" role="img" aria-labelledby="diagramTitle diagramDescription">
+            <title id="diagramTitle">Diagrama del perceptrón simple</title>
+            <desc id="diagramDescription">Tres entradas conectadas mediante sus pesos a una neurona. El sesgo entra desde arriba y la salida y aparece a la derecha.</desc>
+            <defs>
+              <marker id="connectionArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" />
+              </marker>
+            </defs>
+
+            <g class="connections">
+              <line class="connection" x1="151" y1="76" x2="454" y2="132" />
+              <line class="connection" x1="151" y1="175" x2="445" y2="175" />
+              <line class="connection" x1="151" y1="274" x2="454" y2="218" />
+              <line class="connection bias-connection" x1="535" y1="26" x2="535" y2="87" />
+              <line class="connection output-connection" x1="625" y1="175" x2="741" y2="175" />
+            </g>
+
+            <g class="connection-labels">
+              <text class="connection-label" x="270" y="104">w₁ = <tspan id="w1">0</tspan></text>
+              <text class="connection-label" x="275" y="163">w₂ = <tspan id="w2">0</tspan></text>
+              <text class="connection-label" x="270" y="259">w₃ = <tspan id="w3">0</tspan></text>
+              <text class="connection-label bias-label" x="535" y="20" text-anchor="middle">b = <tspan id="bias">0</tspan></text>
+            </g>
+
+            <g class="input-nodes">
+              <text class="svg-input-label" x="26" y="82">x₁</text>
+              <circle class="svg-input-node" cx="119" cy="76" r="31" />
+              <text class="svg-input-value" id="nodeX1" x="119" y="83">−1</text>
+
+              <text class="svg-input-label" x="26" y="181">x₂</text>
+              <circle class="svg-input-node" cx="119" cy="175" r="31" />
+              <text class="svg-input-value" id="nodeX2" x="119" y="182">−1</text>
+
+              <text class="svg-input-label" x="26" y="280">x₃</text>
+              <circle class="svg-input-node" cx="119" cy="274" r="31" />
+              <text class="svg-input-value" id="nodeX3" x="119" y="281">−1</text>
+            </g>
+
+            <circle class="neuron-shape" cx="535" cy="175" r="91" />
+            <text class="neuron-label" x="535" y="168" text-anchor="middle">y = sign(z)</text>
+            <text class="neuron-value" id="perceptronOutput" x="535" y="207" text-anchor="middle">—</text>
+
+            <text class="svg-output-label" x="767" y="166" text-anchor="middle">y</text>
+            <text class="svg-output-value" id="currentY" x="767" y="199" text-anchor="middle">—</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="panel metrics-panel">
+        <h2>Estado del aprendizaje</h2>
+        <div class="stats-grid">
+          <div><span>Época</span><strong id="epoch">0</strong></div>
+          <div><span>Error</span><strong id="epochError">—</strong></div>
+          <div><span>Correctos</span><strong id="accuracy">0 / 8</strong></div>
+          <div><span>Estado</span><strong id="trainingState">Inicial</strong></div>
+        </div>
+
+        <div class="initial-values">
+          <div><span>W inicial</span><strong id="initialWeights">[0, 0, 0]</strong></div>
+          <div><span>b inicial (sesgo)</span><strong id="initialBias">0</strong></div>
+        </div>
+
+        <div class="final-values">
+          <div><span>W final</span><strong id="finalWeights">—</strong></div>
+          <div><span>b final (sesgo)</span><strong id="finalBias">—</strong></div>
+        </div>
+
+        <div class="current-pattern">
+          <div><span>x₁</span><b id="currentX1">−1</b></div>
+          <div><span>x₂</span><b id="currentX2">−1</b></div>
+          <div><span>x₃</span><b id="currentX3">−1</b></div>
+          <div><span>yᵈ</span><b id="currentYD">+1</b></div>
+          <div><span>y</span><b id="currentYValue">—</b></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="panel learning-panel">
+      <div class="learning-head">
+        <div class="learning-label">Regla de aprendizaje</div>
+        <div class="algorithm">z = W·x + b; y = +1 si z ≥ 0, si no y = −1. Si y ≠ yᵈ: W ← W + η·yᵈ·x y b ← b + η·yᵈ.</div>
+      </div>
+      <div class="learning-head learning-progress">
+        <div class="learning-state" id="learningState">Sin entrenamiento todavía.</div>
+      </div>
+    </section>
+
+    <!-- Patrones fijos y errores acumulados por época. -->
+    <section class="bottom-grid">
+      <div class="panel table-panel" id="patterns">
+        <h2>Tabla de patrones</h2>
+        <p class="panel-note">Las entradas y yᵈ son fijas; y es la predicción actual y ✓ indica si coincide con yᵈ.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>x₁</th>
+              <th>x₂</th>
+              <th>x₃</th>
+              <th>yᵈ</th>
+              <th>y</th>
+              <th>✓</th>
+            </tr>
+          </thead>
+          <tbody id="patternBody"></tbody>
+        </table>
+      </div>
+
+      <div class="panel chart-panel">
+        <h2>Error de clasificación por época</h2>
+        <div class="chart-area">
+          <canvas id="errorChart" aria-label="Número de patrones clasificados incorrectamente por época"></canvas>
+          <div class="chart-empty" id="chartEmpty">Aún no hay datos.</div>
+        </div>
+        <p class="chart-caption">Vertical: patrones incorrectos (0–8) · Horizontal: época</p>
+      </div>
+    </section>
+
+    <section class="panel log-panel" id="algorithm">
+      <h2>Algoritmo paso a paso</h2>
+      <div class="log" id="log"></div>
+    </section>
+  </main>
+
+  <!-- El modelo debe cargarse antes del controlador de interfaz. -->
+  <script src="perceptronModel.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
